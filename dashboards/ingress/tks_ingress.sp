@@ -24,6 +24,7 @@ dashboard "tks_ingress" {
 query "ing_list_table" {
   sql = <<-EOQ
     SELECT
+      context_name AS "Cluster ID",
       name AS "Ingress Name",
       namespace as "Namespace",
       jsonb_array_elements(rules) ->> 'host' AS "Host/URL",
@@ -33,7 +34,7 @@ query "ing_list_table" {
       jsonb_array_elements(
         jsonb_array_elements(rules) -> 'http' -> 'paths'
       ) ->> 'path' AS "Path", 
-      load_balancer -> 0 ->> 'ip' AS "External IP"
+      COALESCE(load_balancer -> 0 ->> 'ip', load_balancer -> 0 ->> 'hostname') AS "External_IP/LB_Hostname"
     FROM
       kubernetes_ingress
     where
