@@ -37,7 +37,5 @@ query "ing_list_table" {
       COALESCE(load_balancer -> 0 ->> 'ip', load_balancer -> 0 ->> 'hostname') AS "External_IP/LB_Hostname"
     FROM
       kubernetes_ingress
-    where
-      namespace = 'tks-system'
   EOQ
 }
